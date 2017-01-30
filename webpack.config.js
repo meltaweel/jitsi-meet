@@ -2,7 +2,6 @@
 
 require('babel-polyfill'); // Define Object.assign() from ES6 in ES5.
 
-var HasteResolverPlugin = require('haste-resolver-webpack-plugin');
 var process = require('process');
 var webpack = require('webpack');
 
@@ -19,9 +18,7 @@ var minimize
     = process.argv.indexOf('-p') !== -1
         || process.argv.indexOf('--optimize-minimize') !== -1;
 var node_modules = __dirname + '/node_modules/';
-var plugins = [
-    new HasteResolverPlugin()
-];
+var plugins = [];
 var strophe = /\/node_modules\/strophe(js-plugins)?\/.*\.js$/;
 
 if (minimize) {
@@ -51,12 +48,12 @@ var config = {
     },
     devtool: 'source-map',
     module: {
-        loaders: [ {
+        rules: [ {
             // Transpile ES2015 (aka ES6) to ES5. Accept the JSX syntax by React
             // as well.
 
             exclude: node_modules,
-            loader: 'babel',
+            loader: 'babel-loader',
             query: {
                 // XXX The require.resolve bellow solves failures to locate the
                 // presets when lib-jitsi-meet, for example, is npm linked in
@@ -74,39 +71,33 @@ var config = {
             // to be available in such a form by multiple jitsi-meet
             // dependencies including AUI, lib-jitsi-meet.
 
-            loader: 'expose?$!expose?jQuery',
+            loader: 'expose-loader?$!expose-loader?jQuery',
             test: /\/node_modules\/jquery\/.*\.js$/
         }, {
             // Disable AMD for the Strophe.js library or its imports will fail
             // at runtime.
 
-            loader: 'imports?define=>false&this=>window',
+            loader: 'imports-loader?define=>false&this=>window',
             test: strophe
         }, {
             // Allow CSS to be imported into JavaScript.
 
-            loaders: [
-                'style',
-                'css'
-            ],
-            test: /\.css$/
+            test: /\.css$/,
+            use: [
+                'style-loader',
+                'css-loader'
+            ]
         }, {
             // Emit the static assets of AUI such as images that are referenced
             // by CSS into the output path.
 
             include: aui_css,
-            loader: 'file',
+            loader: 'file-loader',
             query: {
                 context: aui_css,
                 name: '[path][name].[ext]'
             },
             test: /\.(gif|png|svg)$/
-        }, {
-            // Enable the import of JSON files.
-
-            loader: 'json',
-            exclude: node_modules,
-            test: /\.json$/
         } ],
         noParse: [
 
@@ -134,7 +125,20 @@ var config = {
         alias: {
             jquery: 'jquery/dist/jquery' + (minimize ? '.min' : '') + '.js'
         },
-        packageAlias: 'browser'
+        aliasFields: [
+            'browser'
+        ],
+        extensions: [
+            // Webpack 2 broke haste-resolver-webpack-plugin and I could not fix
+            // it. But given that there is resolve.extensions and the only
+            // non-default extension we have is .web.js, drop
+            // haste-resolver-webpack-plugin and go with resolve.extensions.
+            '.web.js',
+
+            // Webpack defaults:
+            '.js',
+            '.json'
+        ]
     }
 };
 
