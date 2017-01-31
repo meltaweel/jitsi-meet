@@ -1,3 +1,4 @@
+/* global APP */
 import React, { Component } from 'react';
 import { Provider } from 'react-redux';
 import { compose, createStore } from 'redux';
@@ -305,6 +306,12 @@ export class AbstractApp extends Component {
 
         if (typeof store === 'undefined') {
             store = this._createStore();
+
+            // This is temporary workaround to be able to dispatch actions from
+            // non-reactified parts of the code (conference.js for example).
+            // Don't use in the react code!!!
+            // FIXME: remove when the reactification is finished!
+            APP.store = store;
         }
 
         return store;
