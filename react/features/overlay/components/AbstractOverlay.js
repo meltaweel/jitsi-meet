@@ -1,9 +1,12 @@
 /* global $, APP */
+
 import React, { Component } from 'react';
 
 /**
  * Implements an abstract React Component for overlay - the components which
  * are displayed on top of the application covering the whole screen.
+ *
+ * @abstract
  */
 export default class AbstractOverlay extends Component {
     /**
@@ -46,6 +49,18 @@ export default class AbstractOverlay extends Component {
     componentDidMount() {
         // XXX Temporary solution until we add React translation.
         APP.translation.translateElement($('#overlay'));
+    }
+
+    /**
+     * Reloads the page.
+     *
+     * @returns {void}
+     * @protected
+     */
+    _reconnectNow() {
+        // FIXME: In future we should dispatch an action here that will result
+        // in reload.
+        APP.ConferenceUrl.reload();
     }
 
     /**

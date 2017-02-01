@@ -37,6 +37,10 @@ UI.eventEmitter = eventEmitter;
 
 /**
  * Whether an overlay is visible or not.
+ *
+ * FIXME: This is temporary solution. Don't use this variable!
+ * Should be removed when all the code is move to react.
+ *
  * @type {boolean}
  * @public
  */

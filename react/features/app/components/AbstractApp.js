@@ -1,4 +1,5 @@
 /* global APP */
+
 import React, { Component } from 'react';
 import { Provider } from 'react-redux';
 import { compose, createStore } from 'redux';

@@ -1,7 +1,11 @@
 /* global APP, AJS */
+
 import React, { Component } from 'react';
+
 import { randomInt } from '../../base/util/randomUtil';
-import AbstractReloadableOverlay from './AbstractReloadableOverlay';
+
+import AbstractOverlay from './AbstractOverlay';
+
 const logger = require('jitsi-meet-logger').getLogger(__filename);
 
 /**
@@ -133,7 +137,7 @@ class ReloadTimer extends Component {
  * the conference is reloaded. Shows a warning message and counts down towards
  * the reload.
  */
-export default class PageReloadOverlay extends AbstractReloadableOverlay {
+export default class PageReloadOverlay extends AbstractOverlay {
     /**
      * PageReloadOverlay component's property types.
      *
@@ -227,14 +231,15 @@ export default class PageReloadOverlay extends AbstractReloadableOverlay {
         if (this.props.isNetworkFailure) {
             const cName = 'button-control button-control_primary '
                 + 'button-control_center';
-            const onClickHandler = this._reconnectNow;
+
+            /* eslint-disable react/jsx-handler-names */
 
             return (
                 <button
                     className = { cName }
                     data-i18n = 'dialog.reconnectNow'
                     id = 'reconnectNow'
-                    onClick = { onClickHandler } />
+                    onClick = { this._reconnectNow } />
             );
         }
 
@@ -250,7 +255,8 @@ export default class PageReloadOverlay extends AbstractReloadableOverlay {
      * @protected
      */
     _renderOverlayContent() {
-        const onFinish = this._reconnectNow;
+
+        /* eslint-disable react/jsx-handler-names */
 
         return (
             <div className = 'inlay'>
@@ -263,7 +269,7 @@ export default class PageReloadOverlay extends AbstractReloadableOverlay {
                 <ReloadTimer
                     end = { 0 }
                     interval = { 1 }
-                    onFinish = { onFinish }
+                    onFinish = { this._reconnectNow }
                     start = { this.state.timeoutSeconds }
                     step = { -1 } />
                 { this._renderButton() }

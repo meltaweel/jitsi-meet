@@ -22,8 +22,8 @@ import EventEmitter from "events";
 
 import { conferenceFailed } from './react/features/base/conference';
 import {
-    suspendDetected,
-    mediaPermissionPromptVisibilityChanged
+    mediaPermissionPromptVisibilityChanged,
+    suspendDetected
 } from './react/features/overlay';
 
 const ConnectionEvents = JitsiMeetJS.events.connection;
