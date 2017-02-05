@@ -219,7 +219,13 @@ function maybeRedirectToWelcomePage(options) {
     if (config.enableWelcomePage) {
         setTimeout(() => {
             APP.settings.setWelcomePageEnabled(true);
-            window.location.pathname = "/";
+
+            // XXX To support a deployment in a sub-directory, assume that the
+            // room (name) is the last non-directory component of the path
+            // (name). We already had the assumption before changing / to ./
+            // here because we are navigating to close.html, close2.html (above)
+            // and authError.html.
+            window.location.pathname = "./";
         }, 3000);
     }
 }
